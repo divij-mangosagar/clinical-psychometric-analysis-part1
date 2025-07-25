@@ -7,25 +7,52 @@ A statistical analysis (partially manually coded math) on a dataset containing n
 
 ## Analysis Workflow & Log
 
-1) Created weighted scores for each patient => sum of "transformed" psychometrics
-   
-2) Stratified weighted scores by diagnosis of psych disorder of patients => diagnosis not included in score
+1. **Weighted Score Calculation:**  
+   - Created weighted scores for each patient as the sum of "transformed" psychometrics.
 
-3) Approximated normal distributions (n approx around 30) for each weighted score observations per disorder strata => created a pooled distribution by sampling equal amounts of weighted score data points from each disorder weighted distribution.
+2. **Stratification by Diagnosis:**  
+   - Stratified weighted scores by the diagnosis of each patient's psychiatric disorder.  
+   - *Note: Diagnosis was not included in the score calculation.*
 
-4) Wanted to study the upper-threshold of the weighted scores for each disorder distribution => higher weighted scores meant the patients experienced more "extreme"/high psychometrics, potentially indicating a more severe presentation of symptoms
+3. **Distribution Approximation:**  
+   - Approximated normal distributions (n ≈ 30 per group) for weighted scores within each disorder stratum.
+   - Created a pooled distribution by sampling equal numbers of weighted score data points from each disorder's weighted score distribution.
 
-5) Tested various upper-thresholds and found that 1.5 above the stdv of the pooled distribution was the best to observe the higher upper weighted scores yet mantain the variability of scores => a higher threshold resulted in too clustered data vs a lower threshold resulting in too variable and less meaningful data. 
+4. **Upper-Threshold Analysis:**  
+   - Investigated the upper-threshold of weighted scores for each disorder's distribution.
+   - Higher weighted scores correspond to more "extreme"/high psychometric values, potentially indicating more severe symptom presentations.
 
-6) Fit a gamma distribution over the upper-event using a manual implementation of mle (gradient ascent to estimate alpha and beta and used series approxiamation to estimate digamma for calculations). Chose gamma since the upper bound distirbutions for each disorder were skewed and the data seemed more appropriate for a gamma dist. 
+5. **Threshold Optimization:**  
+   - Tested various upper thresholds; determined that 1.5 standard deviations above the pooled distribution mean best captured higher weighted scores while maintaining score variability.
+   - Higher thresholds produced overly clustered data; lower thresholds led to excessive variability and reduced interpretability.
 
-7) Wanted to compare the upper score distributions for taildness(kurtosis) and skew for each disorder => Is the skew and taildness of each weighted scores distribution statistically different for each disorder? :
+6. **Gamma Distribution Fitting:**  
+   - Fit a gamma distribution to the upper-event data using a manual MLE implementation (gradient ascent to estimate alpha and beta, series approximation for digamma).
+   - Gamma distribution was chosen due to the skewed nature of the upper-bound distributions for each disorder.
 
-Method 1: Sampled 10,000 data points (weighted scores) from one istribution for one disorder and sampled 10,0000 data points from another dist for another disorder. Calculated the skew/kurtosis for each large sample and created a CI for the difference in skew/kurtosis => Almost no statistical significance between disorders  
+7. **Comparing Tailness (Kurtosis) and Skew:**  
+   - **Goal:** Assess whether the skewness and kurtosis of weighted score distributions differ statistically across disorders.
 
-Method 2: From one weighted score dist for a disorder, sampled 30 data points, found the skew/kurtosis of the sample, created a sampling distribution of skew/kurtosis. Did this for two disorders, so that I had a sampling distribution of skew/kurtosis for both disorders that I was comparing. Created a CI for the difference in means between the two sampling dist => Almost no statistical significance between disorders. HOWEVER => Did power analysis and realized the power was very low ( as expected power did increase by increasing sample size ). Indicates high type 2 error chances => Difficult to tell if the skew/kurtosis is truly different in samples 
+   **Method 1:**  
+   - Sampled 10,000 weighted scores from one disorder distribution and 10,000 from another.
+   - Calculated skew/kurtosis for each sample and constructed a confidence interval (CI) for the difference.
+   - *Result: Almost no statistical significance between disorders.*
+
+   **Method 2:**  
+   - For each disorder, repeatedly sampled 30 data points, calculated sample skew/kurtosis, and built a sampling distribution.
+   - Compared two disorders by creating a CI for the difference in means of these sampling distributions.
+   - *Result: Again, almost no statistical significance between disorders. However, power analysis revealed low statistical power (power improved with larger sample size), indicating a high chance of Type II error. Thus, it's difficult to conclude whether true differences exist.*
+
+---
 
 ## Next Steps & Part 2
-I think that creating weighted scores possibly impacted my results by removing the effects of the indiviual psychometric distributions => Eg. A person with bpd can have the weighted score of 5 and a person with depression can have a weighted score of 5, but the non-standardized psychometrics that caused them to get that weighted score can be completely different. I am currently coding a project where I will analyze the disorders by creating copulas of traits and doing an analysis based on that. Furthermore to continue this project I may do some continued analysis to answer some more questions. 
 
+- **Limitation Identified:**  
+  Creating weighted scores may have obscured differences by hiding distinct psychometric patterns into similar overall scores across disorders.  
+  *Example:* A person with BPD and another with depression may both have a weighted score of 5, but the underlying non-standardized psychometric profiles could differ substantially => Planning to analyze in the part 2 project using copulas.
 
+- **Future Directions:**  
+  - Develop a new analysis using copulas to directly model the joint distribution of psychometric traits within each disorder.
+  - Further analyses to explore additional research questions and possibly revisit the original approach with refined methods.
+
+---
